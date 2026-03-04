@@ -1,6 +1,6 @@
 import re
 from typing import List
-from parser.frameworkClause import FrameworkClause
+from parser1.framework_clause import framework_clause
 
 DOCUMENT_NAME = "Framework for Responsible Sharing"
 
@@ -39,7 +39,7 @@ def parse_framework(text):
         all_bullets = re.findall(r"•\s+(.*)", fp_match.group(1))
         
         for b in all_bullets:
-            new_clause = FrameworkClause(
+            new_clause = framework_clause(
                 document_name=DOCUMENT_NAME,
                 section_number="III",
                 section_title="Foundational Principles",
@@ -81,24 +81,24 @@ def parse_framework(text):
         sections.append(section_info)
         i += 1
     
-    # handle preamble text before section 1
-    if len(sections) > 0:
-        first_section_start = sections[0]["start"]
-        preamble_text = text[:first_section_start]
+    # preamble can be excluded because it is not needed
+    # if len(sections) > 0:
+    #     first_section_start = sections[0]["start"]
+    #     preamble_text = text[:first_section_start]
         
-        all_paragraphs = preamble_text.split("\n\n")
+    #     all_paragraphs = preamble_text.split("\n\n")
         
-        for para in all_paragraphs:
-            para = para.strip()
-            if len(para) > 30 and "." in para:
-                new_clause = FrameworkClause(
-                    document_name=DOCUMENT_NAME,
-                    section_number="Preamble",
-                    section_title="Preamble",
-                    subsection=None,
-                    clause_text=clean(para),
-                )
-                clauses.append(new_clause)
+    #     for para in all_paragraphs:
+    #         para = para.strip()
+    #         if len(para) > 30 and "." in para:
+    #             new_clause = framework_clause(
+    #                 document_name=DOCUMENT_NAME,
+    #                 section_number="Preamble",
+    #                 section_title="Preamble",
+    #                 subsection=None,
+    #                 clause_text=clean(para),
+    #             )
+    #             clauses.append(new_clause)
     
     # now loop through each section
     for section in sections:
@@ -116,7 +116,7 @@ def parse_framework(text):
                     re.S
                 )
                 for sp in subpoints:
-                    new_clause = FrameworkClause(
+                    new_clause = framework_clause(
                         document_name=DOCUMENT_NAME,
                         section_number="I",
                         section_title=title,
@@ -127,7 +127,7 @@ def parse_framework(text):
             
             interpretation_match = re.search(r"2\.\s+Interpretation\.(.*)", content, re.S)
             if interpretation_match:
-                new_clause = FrameworkClause(
+                new_clause = framework_clause(
                     document_name=DOCUMENT_NAME,
                     section_number="I",
                     section_title=title,
@@ -140,7 +140,7 @@ def parse_framework(text):
             
             match = re.search(r"II\.\s+Application(.*)", content, re.S)
             if match:
-                new_clause = FrameworkClause(
+                new_clause = framework_clause(
                     document_name=DOCUMENT_NAME,
                     section_number="II",
                     section_title=title,
@@ -161,7 +161,7 @@ def parse_framework(text):
             for para in all_paragraphs:
                 para = para.strip()
                 if len(para) > 40:
-                    new_clause = FrameworkClause(
+                    new_clause = framework_clause(
                         document_name=DOCUMENT_NAME,
                         section_number="III",
                         section_title=title,
@@ -193,7 +193,7 @@ def parse_framework(text):
                 )
                 
                 for bullet in bullet_pattern:
-                    new_clause = FrameworkClause(
+                    new_clause = framework_clause(
                         document_name=DOCUMENT_NAME,
                         section_number="IV",
                         section_title=title,
@@ -211,7 +211,7 @@ def parse_framework(text):
             )
             
             for nc in numbered_clauses:
-                new_clause = FrameworkClause(
+                new_clause = framework_clause(
                     document_name=DOCUMENT_NAME,
                     section_number="V",
                     section_title=title,
@@ -224,7 +224,7 @@ def parse_framework(text):
             
             match = re.search(r"VI\.\s+Acknowledgements(.*)", content, re.S)
             if match:
-                new_clause = FrameworkClause(
+                new_clause = framework_clause(
                     document_name=DOCUMENT_NAME,
                     section_number="VI",
                     section_title=title,

@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 
-class FrameworkClause(BaseModel):
+class framework_clause(BaseModel):
     document_name: str
     section_number: str       
     section_title: str         

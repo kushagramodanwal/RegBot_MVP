@@ -1,48 +1,68 @@
-from parser.loader import load_framework_pdf
-from parser.structural_chunking import parse_framework
+from parser1.loader import load_framework_pdf
+from parser1.structural_chunking import parse_framework
 
 from rag.document_converter import clauses_to_documents
 from rag.embeddings import load_embedding_model
 from rag.vector_store import create_vector_store
-from rag.retriever import search_framework
+
+from research_pipeline.doc_loader import load_research_document
+from research_pipeline.chunker import chunk_document
+
+from compliance.clause_matcher import match_clauses
+from compliance.gap_detector import detect_gaps
+from compliance.report_generator import generate_report
 
 
-def main():
+def build_framework_index():
 
-    # Load PDF
+    print("\n--- Building Framework Knowledge Base ---\n")
+
     pages = load_framework_pdf("data/framework.pdf")
 
-    # Merge pages
     full_text = ""
     for page in pages:
         full_text += page.page_content + "\n\n"
 
-    # Structural parsing
     clauses = parse_framework(full_text)
 
-    print("Total Clauses:", len(clauses))
+    print("Total Framework Clauses:", len(clauses))
 
-    # Convert to documents
-    docs = clauses_to_documents(clauses)
+    framework_docs = clauses_to_documents(clauses)
 
-    # Load embeddings
     embeddings = load_embedding_model()
 
-    # Create vector database
-    vectorstore = create_vector_store(docs, embeddings)
+    # optional vector DB
+    create_vector_store(framework_docs, embeddings)
 
-    # Test query
-    query = "Can genomic data be shared internationally?"
+    print("\nFramework Knowledge Base Ready\n")
 
-    results = search_framework(vectorstore, query)
+    return framework_docs, embeddings
 
-    print("\nTop Results:\n")
 
-    for r in results:
+def analyze_research_document(framework_docs, embeddings):
 
-        print("Text:", r.page_content)
-        print("Metadata:", r.metadata)
-        print("-" * 50)
+    print("\n--- Loading Research Document ---\n")
+
+    research_text = load_research_document("data/research_doc.txt")
+
+    research_chunks = chunk_document(research_text)
+
+    print("Research Document Chunks:", len(research_chunks))
+
+    match_results = match_clauses(framework_docs, research_chunks, embeddings)
+
+    present, missing = detect_gaps(match_results)
+
+    generate_report(present, missing, research_text)
+
+
+def main():
+
+    # Step 1: Build framework knowledge base
+    framework_docs, embeddings = build_framework_index()
+
+    # Step 2: Analyze researcher document
+    analyze_research_document(framework_docs, embeddings)
 
 
 if __name__ == "__main__":

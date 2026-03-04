@@ -1,5 +1,4 @@
-from langchain.vectorstores import Chroma
-
+from langchain_community.vectorstores import Chroma
 
 def create_vector_store(documents, embeddings):
 
@@ -9,6 +8,5 @@ def create_vector_store(documents, embeddings):
         persist_directory="vector_db"
     )
 
-    vectorstore.persist()
 
     return vectorstore
