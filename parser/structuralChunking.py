@@ -1,6 +1,6 @@
 import re
 from typing import List
-from frameworkClause import FrameworkClause
+from parser.frameworkClause import FrameworkClause
 
 DOCUMENT_NAME = "Framework for Responsible Sharing"
 

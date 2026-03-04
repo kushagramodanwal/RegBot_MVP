@@ -1,5 +1,5 @@
-from loader import load_framework_pdf
-from structuralChunking import parse_framework
+from parser.loader import load_framework_pdf
+from parser.structuralChunking import parse_framework
 
 
 def main():
